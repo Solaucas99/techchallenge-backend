@@ -1,0 +1,184 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model JS_Challenge {
+  id    String    @id     @default(uuid())
+  createdAt  DateTime   @default(now())
+  title    String
+  instruction    String  @db.LongText
+  test_archive    String
+  start_archive    String
+  pontuation    Int
+  solutions_submitted    JS_Solution[]
+
+
+  @@map("js_challenges")
+  }
+
+model JS_Solution {
+  id    String    @id       @default(uuid())
+  createdAt  DateTime   @default(now())
+  solution_submitted    String
+  user_id   String
+  User User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  js_challenge_id  String
+  JS_Challenge JS_Challenge @relation(fields: [js_challenge_id], references: [id], onDelete: Cascade)
+  Likes    JS_Solution_Like[]
+
+
+  @@map("js_solutions")
+  }
+
+model JS_Solution_Like {
+  id    String    @id       @default(uuid())
+  createdAt  DateTime   @default(now())
+  user_id   String
+  User User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  js_solution_id  String
+  JS_Solution JS_Solution @relation(fields: [js_solution_id], references: [id], onDelete: Cascade)
+
+  @@map("js_solutions_likes")
+  }
+
+model HTML_Challenge {
+  id    String    @id     @default(uuid())
+  createdAt  DateTime   @default(now())
+  title    String
+  instruction    String  @db.LongText
+  test_archive    String
+  start_archive    String
+  html_archive    String
+  pontuation    Int
+  solutions_submitted    HTML_Solution[]
+
+
+  @@map("html_challenges")
+  }
+
+model HTML_Solution {
+  id    String    @id       @default(uuid())
+  createdAt  DateTime   @default(now())
+  solution_submitted    String
+  user_id   String
+  User User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  html_challenge_id  String
+  HTML_Challenge HTML_Challenge @relation(fields: [html_challenge_id], references: [id], onDelete: Cascade)
+  Likes    HTML_Solution_Like[]
+
+
+  @@map("html_solutions")
+  }
+
+model HTML_Solution_Like {
+  id    String    @id       @default(uuid())
+  createdAt  DateTime   @default(now())
+  user_id   String
+  User User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  html_solution_id  String
+  HTML_Solution HTML_Solution @relation(fields: [html_solution_id], references: [id], onDelete: Cascade)
+
+  @@map("html_solutions_likes")
+  }
+
+model Code_Complete_Challenge {
+  id    String    @id     @default(uuid())
+  createdAt  DateTime   @default(now())
+  title    String
+  instruction    String   @db.LongText
+  challenge_archive    String
+  pontuation    Int
+  answer_1    String
+  answer_2    String
+  answer_3    String
+  solutions_submitted    Code_Complete_Solution[]
+
+
+  @@map("code_complete_challenges")
+  }
+
+model Code_Complete_Solution {
+  id    String    @id       @default(uuid())
+  createdAt  DateTime   @default(now())
+  answer_1    String
+  answer_2    String
+  answer_3    String
+  user_id   String
+  User User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  code_complete_challenge_id  String
+  Code_Complete_Challenge Code_Complete_Challenge @relation(fields: [code_complete_challenge_id], references: [id], onDelete: Cascade)
+
+
+  @@map("code_complete_solutions")
+  }
+
+model Quiz_Challenge {
+  id    String    @id     @default(uuid())
+  createdAt  DateTime   @default(now())
+  title    String
+  instruction    String  @db.LongText
+  asks    Quiz_Question[]
+  solutions_submitted    Quiz_Solution[]
+
+
+  @@map("quiz_challenges")
+  }
+
+model Quiz_Question {
+  id    String    @id     @default(uuid())
+  createdAt  DateTime   @default(now())
+  question_text    String  @db.LongText
+  option_1   String  @db.LongText
+  option_2    String  @db.LongText
+  option_3    String  @db.LongText
+  option_4    String  @db.LongText
+  correct_answer    Int
+  question_score    Int
+  quiz_challenge_id  String
+  Quiz_Challenge Quiz_Challenge @relation(fields: [quiz_challenge_id], references: [id], onDelete: Cascade)
+
+
+  @@map("quiz_questions")
+  }
+
+model Quiz_Solution {
+  id    String    @id       @default(uuid())
+  createdAt  DateTime   @default(now())
+  correct_answers_pontuation    Int
+  answer_1    Int
+  answer_2    Int
+  answer_3    Int
+  answer_4    Int
+  answer_5    Int
+  user_id   String
+  User User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  quiz_challenge_id  String
+  Quiz_Challenge Quiz_Challenge @relation(fields: [quiz_challenge_id], references: [id], onDelete: Cascade)
+
+
+  @@map("quiz_solutions")
+  }
+
+model User {
+  id    String    @id       @default(uuid())
+  createdAt  DateTime   @default(now())
+  username    String    @unique
+  password    String
+  email    String  @unique
+  is_admin    Boolean   @default(false)
+  js_solutions_submitted JS_Solution[]
+  html_solutions_submitted HTML_Solution[]
+  code_complete_solutions_submitted Code_Complete_Solution[]
+  quiz_solutions_submitted Quiz_Solution[]
+  js_solutions_liked JS_Solution_Like[]
+  html_solutions_liked HTML_Solution_Like[]
+
+
+  @@map("users")
+  }
+

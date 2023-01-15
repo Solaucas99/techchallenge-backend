@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql
+    restart: always
+    container_name: MySqlDB
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    networks:
+      - my-network
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+
+networks:
+    my-network:
+        driver: bridge
